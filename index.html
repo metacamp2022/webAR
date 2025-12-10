@@ -2,18 +2,20 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- 引入 A-Frame -->
+    
+    <!-- 1. 引入 A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <!-- 引入 MindAR 的 A-Frame adapter -->
+    
+    <!-- 2. 引入 MindAR 的 A-Frame adapter -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <title>MindAR WebAR Demo</title>
+    
+    <!-- 3. 【新增】引入 A-Frame Extras (用來處理動畫) -->
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+
+    <title>MindAR Animated WebAR</title>
   </head>
   <body>
-    <!-- 
-      MindAR 場景設定:
-      imageTargetSrc: 指定你的 targets.mind 路徑
-      maxTrack: 同時追蹤的圖片數量 (預設為 1)
-    -->
+    <!-- MindAR 場景設定 -->
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind;" 
       color-space="sRGB" 
@@ -21,33 +23,31 @@
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
 
-      <!-- 資源載入區 (Assets Management) -->
       <a-assets>
-        <!-- 這裡載入你的 GLB 模型，給它一個 ID 方便下方引用 -->
+        <!-- 載入模型 -->
         <a-asset-item id="avatarModel" src="./3d.glb"></a-asset-item>
       </a-assets>
 
-      <!-- 設定攝影機 -->
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- 
-        設定追蹤目標:
-        targetIndex: 0 代表 targets.mind 中的第一張圖
-      -->
+      <!-- 追蹤目標 (Index 0) -->
       <a-entity mindar-image-target="targetIndex: 0">
+        
         <!-- 
-          顯示 3D 模型:
-          src: 對應上面的 id
-          rotation: 旋轉角度 (x y z)
-          position: 位置 (x y z)
-          scale: 縮放大小 (x y z) -> 如果模型太大或太小，請調整這裡
+          顯示 3D 模型並設定動畫:
+          animation-mixer 屬性詳解:
+            clip: *       -> 播放所有偵測到的動畫片段 (也可以指定具體名稱，如 clip: Run)
+            loop: repeat  -> 無限循環播放 (這是預設值)
+            timeScale: 1  -> 播放速度 (1為正常，0.5為慢動作，2為快轉)
         -->
         <a-gltf-model 
             src="#avatarModel" 
-            rotation="0 0 0" 
             position="0 0 0" 
             scale="0.5 0.5 0.5" 
+            rotation="0 0 0"
+            animation-mixer="clip: *; loop: repeat; timeScale: 1"
         ></a-gltf-model>
+
       </a-entity>
     </a-scene>
   </body>
